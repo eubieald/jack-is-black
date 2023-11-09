@@ -76,7 +76,7 @@ function validateGame() {
       message = "Wohoo! You've got Blackjack!";
       hasBlackjack = true;
       isAlive = false;
-      person.chips += 10;
+      person.chips += 50;
 
     } else {
       message = "You're out of the game!";
