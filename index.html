@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="index.css">
+  <title>Blackjack Game</title>
+</head>
+<body>
+  <h1>Blackjack</h1>
+  <div class="msg-wrapper">
+    <p class="msg" id="msg">Let's play Blackjack!</p>
+  </div>
+  <p class="cards" id="cards">Cards:</p>
+  <p class="total-label">Total: <span id="total">0</span></p>
+  <div class="btn-wrapper">
+    <button class="btn-start" id="btn-start">Start Game</button>
+  </div>
+  <div class="player-details-wrapper">
+    <p class="player-name-container">Player: <input type="text" class="player-name" id="player-name" placeholder="Who are you player?" aria-placeholder="Enter your name"></p>
+    <p class="player-chips-container">Chips: <span>$</span><span class="player-chips" id="player-chips">100</span></p>
+    <span class="error" id="error"></span>
+  </div>
+</body>
+<script src="index.js"></script>
+</html>

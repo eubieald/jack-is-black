@@ -1,0 +1,109 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: 'Press Start 2P', cursive, sans-serif;
+  text-align: center;
+}
+
+h1 {
+  padding-top: 10%;
+  color: white;
+  width: 100%;
+  text-align: center;
+  font-size: 40px;
+  line-height: 40px;
+  letter-spacing: 5px;
+  text-shadow: -2px 0 0 #18180b, -4px 0 0 #9e5c58, 2px 0 0 #207c20, 4px 0 0 #4405fc;
+}
+
+p {
+  font-size: 18px;
+  color: chartreuse;
+}
+
+div.msg-wrapper {
+  height: 25px;
+  margin: 0;
+  padding: 0;
+}
+
+p.msg {
+  color: goldenrod;
+}
+
+.btn-wrapper {
+  padding-top: 20px;
+}
+
+.btn-start,
+.btn-exit,
+.btn-newCard,
+.btn-retry {
+  max-width: 120px;
+  padding: 10px;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  background-color: green;
+  font-size: 16px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  text-align: center;
+}
+
+.btn-newCard {
+  width: 120px;
+  margin-left: 10px;
+}
+
+.btn-start:hover,
+.btn-exit:hover,
+.btn-newCard:hover,
+.btn-retry:hover {
+  cursor: pointer;
+}
+
+.btn-start:hover {
+  background-color: goldenrod;
+}
+
+.btn-retry:hover {
+  background-color: red;
+}
+
+#btn-newCard:hover {
+  background-color: goldenrod;
+}
+
+
+.player-details-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15%;
+}
+
+.player-details-wrapper p {
+  text-align: left;
+  margin: 0;
+}
+
+.error {
+  text-align: left;
+  color: red;
+}
+
+.player-name {
+  margin-left: 5px;
+  border: none;
+  border-radius: 0;
+  background-color: oldlace;
+  font-size: 16px;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  text-align: center;
+}
+
+.player-chips-container span:first-of-type,
+.player-chips {
+  color: red;
+}
