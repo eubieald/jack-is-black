@@ -46,7 +46,9 @@ p.msg {
   border-radius: 5px;
   background-color: green;
   font-size: 16px;
-  font-family: 'Courier New', Courier, monospace;
+  font-family: 'fantasy', sans-serif;
+  font-weight: bold;
+  text-align: center;
   font-weight: bold;
   text-align: center;
 }
@@ -80,6 +82,7 @@ p.msg {
   display: flex;
   flex-direction: column;
   margin-top: 15%;
+  font-family: fantasy, sans-serif;
 }
 
 .player-details-wrapper p {
@@ -98,7 +101,6 @@ p.msg {
   border-radius: 0;
   background-color: oldlace;
   font-size: 16px;
-  font-family: 'Courier New', Courier, monospace;
   font-weight: bold;
   text-align: center;
 }
