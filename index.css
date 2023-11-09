@@ -2,7 +2,7 @@ body {
   background-color: black;
   color: white;
   text-align: center;
-  font-family: fantasy, sans-serif;
+  font-family: monospace, sans-serif;
 }
 
 h1 {
@@ -18,7 +18,7 @@ h1 {
 }
 
 p {
-  font-size: 18px;
+  font-size: 16px;
   color: chartreuse;
 }
 
@@ -48,7 +48,6 @@ p.msg {
   border-radius: 5px;
   background-color: green;
   font-size: 16px;
-  font-family: 'fantasy', sans-serif;
   font-weight: bold;
   text-align: center;
   font-weight: bold;
@@ -84,7 +83,6 @@ p.msg {
   display: flex;
   flex-direction: column;
   margin-top: 15%;
-  font-family: fantasy, sans-serif;
 }
 
 .player-details-wrapper p {
@@ -95,6 +93,10 @@ p.msg {
 .error {
   text-align: left;
   color: red;
+}
+
+.player-details-wrapper p.player-name-container {
+  margin-bottom: 10px;
 }
 
 .player-name {
