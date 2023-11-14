@@ -1,205 +1,306 @@
-let firstCard,
-secondCard,
-cards = [],
-total = 0,
-person = {
-  name: document.getElementById("player-name").value,
-  chips: 100,
+const initialChips = 100;
+
+function User(name) {
+  this.name = name;
+  this.chips = initialChips;
+  this.cards = [];
+  // create method
+  this.sumOfCards = function() {
+    return this.cards.reduce((accumulator, curr_value) => accumulator + curr_value, 0);
+  }
 }
 
-let hasBlackjack = false,
-isAlive = true,
-canRetry = false;
+function Buttons(id, title, targetContainer, callback) {
+  this.id = id;
+  this.title = title;
+  this.targetContainer = targetContainer;
+  this.callback = callback;
 
-let messageEl = document.getElementById("msg"),
-totalEl = document.getElementById("total"),
-cardsEl = document.getElementById("cards"),
-playerNameEl = document.getElementById("player-name"),
-chipsEl = document.getElementById("player-chips"),
-errorEl = document.getElementById("error");
+  this.render = function() {
+    // Create a button element
+    const button = document.createElement("button");
 
-let btnRetry = document.createElement("button"),
-  btnNewCard = document.createElement("button");
+    // Set attributes and text content
+    button.id = this.id;
+    button.textContent = this.title;
 
-// Button Event Listeners
-let btnStart = document.createElement("button"),
-btnStartEl= document.getElementById("btn-start");
-btnStartEl.addEventListener("click", startGame);
+    // Add click event listener to invoke the callback function
+    button.addEventListener("click", () => {
+      if (typeof this.callback === 'function') {
+        this.callback();
+      }
+    });
 
-/**
- * Starts the game by initializing the cards and rendering the buttons.
- *
- * @return {undefined} This function does not return a value.
- */
-function startGame() {
-  firstCard = getRandomCard();
-  secondCard = getRandomCard();
-  cards = [firstCard, secondCard];
-
-  // Check if the input value is empty or consists of only whitespace
-  const inputValue = playerNameEl.value.trim();
-  if (inputValue === "") {
-    error.textContent = "Player name cannot be empty.";
-    return;
-  }
-  error.textContent = "";
-
-  renderButton(btnRetry, "Retry", "retry", ".btn-wrapper");
-  renderButton(btnNewCard, "New Card", "newCard", ".btn-wrapper");
-
-  document.getElementById('btn-retry').addEventListener("click", resetGame);
-  document.getElementById('btn-newCard').addEventListener("click", newCard);
-  
-  document.getElementById('btn-start').remove();
-
-  validateGame();
-}
-
-/**
- * Validates the game and updates the game state accordingly.
- *
- * @return {undefined} No return value.
- */
-function validateGame() {
-  if (person.chips === 0) {
-    alert('You are out of chips. Game over!');
-    window.location.reload();
-  }
-
-  total = getTotal();
-
-  if (hasBlackjack === false && isAlive === true) {
-    // Check if game is still valid
-    if (total < 21) {
-      message = "Do you want to draw a new card?";
-    } else if (total === 21) {
-      message = "Wohoo! You've got Blackjack!";
-      hasBlackjack = true;
-      isAlive = false;
-      person.chips += 50;
-
+    // Append the button to the target container
+    const container = document.getElementById(this.targetContainer);
+    if (container) {
+      container.appendChild(button);
     } else {
-      message = "You're out of the game!";
-      isAlive = false;
-      person.chips -= 10;
+      console.error("Target container not found.");
+      return;
+    }
+  };
+}
+
+// Create start button
+const btn_object_start = new Buttons("btn-start", "Start Game", "button-wrapper", () => {
+  renderGame();
+});
+
+const btn_object_stand = new Buttons("btn-stand", "Stand", "button-wrapper", () => {
+  standCards();
+});
+
+const btn_object_hit = new Buttons("btn-hit", "Hit", "button-wrapper", () => {
+  hitCards(true);
+});
+
+const btn_object_retry = new Buttons("btn-retry", "Retry", "button-wrapper", () => {
+  resetGame();
+});
+
+const btn_object_bet = new Buttons("btn-bet", "Place a Bet", "button-wrapper", () => {
+  placeBet();
+});
+
+btn_object_bet.render();
+
+
+let dealer = new User('Dealer', 100);
+let player = new User('Eubie', 100);
+
+let gameInProgress = false,
+hasBlackJack = false,
+revealDealerCards = false;
+
+let playerCardsEl = document.getElementById('player-cards'),
+    dealerCardsEl = document.getElementById('dealer-cards');
+
+let playerTotalEl = document.getElementById('player-total'),
+    dealerTotalEl = document.getElementById('dealer-total');
+
+let playerChipsEl = document.getElementById('player-chips');
+
+let betAmount = 0;
+
+function placeBet() {
+    betAmount = getBetAmount();
+    button_bet_element = document.getElementById(btn_object_bet.id);
+
+    button_bet_element.remove();
+    btn_object_start.render();
+}
+
+function renderGame(isFromRetry = null) {
+    dealer.cards.push(...getRandomCard(2));
+    player.cards.push(...getRandomCard(2));
+    
+    // Display player total
+    playerTotalEl.textContent = player.sumOfCards();
+
+    displayCards('dealer');
+    displayCards('player');
+    gameInProgress = true;
+    isBlackJack();
+    updateChips();
+
+    // Remove button start when start game
+    if (gameInProgress) {
+      let button_start_element = document.getElementById(btn_object_start.id);
+      if (button_start_element) {
+        button_start_element.remove();
+      }
+
+    if (!isFromRetry) {
+        btn_object_stand.render();
+        btn_object_hit.render();
+      }
+    }
+}
+
+function resetGame() {
+  if (player.chips > 0) {
+    betAmount = getBetAmount();
+    let button_retry_element = document.getElementById(btn_object_retry.id);
+    button_retry_element.remove();
+  
+    updateGameStatusLabel("Let's play Blackjack!");
+    player.cards = [];
+    dealer.cards = [];
+    renderGame(true);
+  } else {
+    alert("Gameover! You don't have any chips left. Please try again.");
+    location.reload();
+  }
+}
+
+function isBlackJack() {
+  if (player.sumOfCards() === 21 && dealer.sumOfCards() !== 21) {
+      updateGameStatusLabel("Player got Blackjack! Player Wins!");
+      dealerTotalEl.textContent = dealer.sumOfCards();
+      playerTotalEl.textContent = player.sumOfCards();
+
+      player.chips += parseInt(betAmount);
+      gameInProgress = false;
+  }
+}
+
+function hitCards(isFromPlayer = null) {
+  if (gameInProgress) {
+    if (isFromPlayer === true) {
+        player.cards.push(...getRandomCard(1));
+        playerTotalEl.textContent = player.sumOfCards();
+        displayCards('player');
+        isBusted();
+        dealerChoice();
+    } else {
+      dealer.cards.push(...getRandomCard(1));
+      displayCards('dealer');
     }
 
-    renderText(totalEl, total);
-    renderText(messageEl, message);
-    renderText(chipsEl, person.chips);
-    renderCards(cards);
+    }
+}
 
-    console.log('cards:' + cards);
-    console.log('total:'+ total);
-  } else {
-    resetGame();
+function standCards() {
+    if (gameInProgress) {
+        checkWinner();
+        updateChips();
+        dealerTotalEl.textContent = dealer.sumOfCards();
+
+        gameInProgress = false;
+        btn_object_retry.render();
+    }
+}
+
+function dealerChoice() {
+    if (gameInProgress) {
+      const options = ["hit", "stand"];
+      // Randomly choose an option
+      const randomIndex = Math.floor(Math.random() * options.length);
+      const chosenOption = options[randomIndex];
+
+      while (chosenOption === "hit" && dealer.sumOfCards() < 17) {
+        hitCards(false);
+      }
+    }
+}
+
+function isBusted() {
+    let playerTotal = player.sumOfCards();
+    if (playerTotal > 21) {
+      updateGameStatusLabel("Busted! You Lose!");
+      
+      displayCards('dealer-reveal');
+      dealerTotalEl.textContent = dealer.sumOfCards();
+
+      player.chips -= parseInt(betAmount);
+      
+      updateChips();
+      
+      gameInProgress = false;
+      btn_object_retry.render();
+    }
+} 
+
+function checkWinner() {
+    if (gameInProgress) {
+        let playerTotal = player.sumOfCards(),
+        dealerTotal = dealer.sumOfCards();
+        
+    if (playerTotal > 21) {
+        updateGameStatusLabel("Busted! You Lose!");
+        player.chips -= parseInt(betAmount);
+
+    } else if (dealerTotal > 21 || playerTotal > dealerTotal) {
+      updateGameStatusLabel("Player Wins!");
+      player.chips += parseInt(betAmount);
+    } else if (playerTotal < dealerTotal) {
+      updateGameStatusLabel("Dealer Wins!");
+      player.chips -= parseInt(betAmount);
+    } else updateGameStatusLabel("It's a tie!");
+    
+    displayCards('dealer-reveal');
+    displayCards('player');
+    }
+}
+
+function getRandomCard(qty) {
+  const myMin = 1;
+  const myMax = 12;
+  const cards = [];
+
+  for (let index = 0; index < qty; index++) {
+    const randomNumber = Math.floor(Math.random() * (myMax - myMin + 1)) + myMin;
+
+    if (randomNumber === 1) {
+      cards.push(11); // Ace
+    } else if (randomNumber > 10) {
+      cards.push(10); // Face cards
+    } else {
+      cards.push(randomNumber);
+    }
+  }
+
+  return cards;
+}
+
+function updateGameStatusLabel(text) {
+  return document.getElementById("game-status-label").textContent = text
+}
+
+/**
+ * Display the cards based on the implementation type.
+ *
+ * @param {string} implementationType - The type of implementation (e.g. "dealer", "dealer-reveal", "player").
+ */
+function displayCards(implementationType) {
+  switch  (implementationType) {
+    case "dealer":
+      dealerCardsEl.textContent = "";
+      dealer.cards.forEach(function(item, index) {
+        if (index === 0) {
+          dealerCardsEl.textContent += `[${item}] `;
+        } else dealerCardsEl.textContent += ` [?] `;
+      });
+      break;
+    case "dealer-reveal":
+      dealerCardsEl.textContent = "";
+      dealer.cards.forEach(function(item, index) {
+        dealerCardsEl.textContent += `[${item}] `;
+      });
+      break;
+    case "player":
+      playerCardsEl.textContent = "";
+      player.cards.forEach(function(item, index) {
+        playerCardsEl.textContent += `[${item}] `;
+      });
+      break;
   }
 }
 
-/**
- * Resets the game by resetting all game variables, updating the UI, and reloading the page.
- *
- * @return {void} This function does not return anything.
- */
-function resetGame() {
-  hasBlackjack = false;
-  isAlive = true;
-  canRetry = false;
-  total = 0;
-  cards = [];
-  message = "Let's play Blackjack!";
-  
-  renderCards(cards);
-  renderText(totalEl, total);
-  renderText(messageEl, message);
-
-  btnRetry.remove();
-  btnNewCard.remove();
-
-  let btnStart = document.createElement("button");
-  renderButton(btnStart, "Start Game", "start", ".btn-wrapper");
-  document.getElementById('btn-start').addEventListener("click", startGame);
-}
-
-/**
- * Generates a random card value between 1 and 12.
- *
- * @return {number} The randomly generated card value.
- */
-function getRandomCard() {
-  let myMin = 1,
-  myMax = 12,
-  randomNumber = Math.floor(Math.random() * (myMax - myMin + 1)) + myMin;
-  if (randomNumber === 1) {
-    return 11;
-  } else if (randomNumber > 10) {
-    return 10;
+function updateChips() {
+  if (player.chips < 0) {
+    alert("You're out of chips!");
+    location.reload();
   }
 
-  return randomNumber;
+  document.getElementById("player-chips").textContent = player.chips;
 }
 
-/**
- * Calculates the total sum of all elements in the 'cards' array.
- *
- * @param {Array} cards - The array of numbers to be summed.
- * @return {number} The total sum of all elements in the 'cards' array.
- */
-function getTotal () {
-  let total = 0;
-  cards.forEach(element => {
-    total += element;
-  });
-  return total;
-}
+function getBetAmount() {
+  let userInput;
+  let isValid = false;
 
-/**
- * Sets the text content of the given element to the specified text.
- *
- * @param {Element} element - The element to update.
- * @param {string} text - The text to set as the content of the element.
- * @return {string} The updated text content of the element.
- */
-function renderText(element, text) {
-  return element.textContent = text;
-}
+  while (!isValid) {
+    userInput = prompt("Place a bet:");
 
-/**
- * Renders the given array of cards to the DOM element with the id 'cards'.
- *
- * @param {Array} cards - The array of cards to be rendered.
- */
-function renderCards(cards) {
-  cardsEl.textContent = "Cards: ";
-  cards.forEach(element => {
-    cardsEl.textContent += `[${element}] `;
-  });
+    // Check if the entered value is a number
+    isValid = !isNaN(userInput) && userInput !== '' && userInput !== null && userInput !== undefined;
 
-}
+    if (!isValid) {
+      alert("Invalid input. Please enter a valid number.");
+    }
+  }
 
-/**
- * Generates a new card and adds it to the cards array.
- *
- * @param {type} paramName - description of parameter
- * @return {type} description of return value
- */
-function newCard() {
-  let newCard = getRandomCard();
-  cards.push(newCard);
-  validateGame();
-}
-
-/**
- * Renders a button with the specified title and id, and appends it to the target container.
- *
- * @param {HTMLElement} button - The button element to be rendered.
- * @param {string} title - The title of the button.
- * @param {string} id - The id of the button.
- * @param {string} targetContainer - The selector of the target container element where the button will be appended.
- */
-function renderButton(button, title, id, targetContainer) {
-  button.textContent = title;
-  button.id = "btn-" + id;
-  button.classList = "btn-" + id;
-  document.querySelector(targetContainer).appendChild(button);
+  return parseFloat(userInput);
 }

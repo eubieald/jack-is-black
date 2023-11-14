@@ -8,18 +8,20 @@
 </head>
 <body>
   <h1>Blackjack</h1>
-  <div class="msg-wrapper">
-    <p class="msg" id="msg">Let's play Blackjack!</p>
+  <div class="game-status-wrapper">
+    <p class="game-status-label" id="game-status-label">Let's play Blackjack!</p>
   </div>
-  <p class="cards" id="cards">Cards:</p>
-  <p class="total-label">Total: <span id="total">0</span></p>
-  <div class="btn-wrapper">
-    <button class="btn-start" id="btn-start">Start Game</button>
+  <div class="button-wrapper" id="button-wrapper">
   </div>
-  <div class="player-details-wrapper">
-    <p class="player-name-container">Player: <input type="text" class="player-name" id="player-name" placeholder="Who are you player?" aria-placeholder="Enter your name"></p>
-    <p class="player-chips-container">Chips: <span>$</span><span class="player-chips" id="player-chips">100</span></p>
-    <span class="error" id="error"></span>
+  <div class="user-details-wrapper">
+    <p class="dealer-cards-label" id="dealer-cards-label">Dealer Cards:<span class="dealer-cards" id="dealer-cards"></span></p>
+    <p class="player-cards-label" id="player-cards-label">Your Cards:<span class="player-cards" id="player-cards"></span></p>
+    <p class="player-chips-label" id="player-chips-label">Chips: <span>$</span><span class="player-chips" id="player-chips">100</span></span></p>
+  </div>
+
+  <div class="totals-wrapper">
+    <p class="dealer-total-label" id="dealer-total-label">Dealer Total: <span class="dealer-total" id="dealer-total">?</span></p>
+    <p class="player-total-label" id="player-total-label">Your Total: <span class="player-total" id="player-total">0</span></p>
   </div>
 </body>
 <script src="index.js"></script>

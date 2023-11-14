@@ -33,14 +33,19 @@ p.msg {
   color: goldenrod;
 }
 
-.btn-wrapper {
+.button-wrapper {
   padding-top: 20px;
 }
 
-.btn-start,
-.btn-exit,
-.btn-newCard,
-.btn-retry {
+.button-wrapper button:nth-child(n+2) {
+  margin-left: 10px;
+}
+
+#btn-start,
+#btn-hit,
+#btn-stand,
+#btn-bet,
+#btn-retry {
   max-width: 120px;
   padding: 10px;
   color: white;
@@ -54,62 +59,45 @@ p.msg {
   text-align: center;
 }
 
-.btn-newCard {
+#btn-hit,
+#btn-stand,
+#btn-bet,
+#btn-retry {
   width: 120px;
-  margin-left: 10px;
 }
 
-.btn-start:hover,
-.btn-exit:hover,
-.btn-newCard:hover,
-.btn-retry:hover {
+#btn-start:hover,
+#btn-stand:hover,
+#btn-hit:hover,
+#btn-bet:hover
+#btn-retry:hover {
   cursor: pointer;
 }
 
-.btn-start:hover {
+#btn-start:hover,
+#btn-hit:hover,
+#btn-bet:hover,
+#btn-stand:hover {
   background-color: goldenrod;
 }
 
-.btn-retry:hover {
+#btn-retry:hover {
   background-color: red;
 }
 
-#btn-newCard:hover {
-  background-color: goldenrod;
-}
 
-
-.player-details-wrapper {
+.user-details-wrapper {
   display: flex;
   flex-direction: column;
-  margin-top: 15%;
+  align-items: center;
+  margin-top: 5%;
 }
 
-.player-details-wrapper p {
-  text-align: left;
-  margin: 0;
-}
-
-.error {
-  text-align: left;
-  color: red;
-}
-
-.player-details-wrapper p.player-name-container {
+.user-details-wrapper p.player-name-container {
   margin-bottom: 10px;
 }
 
-.player-name {
-  margin-left: 5px;
-  border: none;
-  border-radius: 0;
-  background-color: oldlace;
-  font-size: 16px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.player-chips-container span:first-of-type,
+.player-chips-label > span:first-of-type,
 .player-chips {
   color: red;
 }
