@@ -1,5 +1,48 @@
 const initialChips = 100;
 
+// create users instances
+let dealer = new User('Dealer', 100),
+player = new User('Player', 100);
+
+// set game stauses
+let gameInProgress = false,
+hasBlackJack = false;
+
+// reference elements and store to variables
+let playerCardsEl = document.getElementById('player-cards'),
+    dealerCardsEl = document.getElementById('dealer-cards'),
+    playerTotalEl = document.getElementById('player-total'),
+    dealerTotalEl = document.getElementById('dealer-total'),
+    playerChipsEl = document.getElementById('player-chips');
+
+let betAmount = 0;
+
+// Create button objects
+const btn_object_start = new Buttons("btn-start", "Start Game", "button-wrapper", () => {
+  renderGame(false);
+}),
+btn_object_stand = new Buttons("btn-stand", "Stand", "button-wrapper", () => {
+  standCards();
+}),
+btn_object_hit = new Buttons("btn-hit", "Hit", "button-wrapper", () => {
+  hitCards(true);
+}),
+btn_object_retry = new Buttons("btn-retry", "Retry", "button-wrapper", () => {
+  resetGame();
+}),
+btn_object_bet = new Buttons("btn-bet", "Place a Bet", "button-wrapper", () => {
+  placeBet();
+});
+
+// render place bet button
+btn_object_bet.render();
+
+/**
+ * Creates a User object with the given name.
+ *
+ * @param {string} name - The name of the user.
+ * @return {undefined} 
+ */
 function User(name) {
   this.name = name;
   this.chips = initialChips;
@@ -12,6 +55,16 @@ function User(name) {
   }
 }
 
+/**
+ * Creates a Buttons object that represents a button with a specified id, title, target container,
+ * and callback function. The render function adds the button to the target container and sets up a
+ * click event listener to invoke the callback function.
+ *
+ * @param {string} id - The id of the button.
+ * @param {string} title - The title or text content of the button.
+ * @param {string} targetContainer - The id of the HTML element where the button will be appended.
+ * @param {function} callback - The function to be invoked when the button is clicked.
+ */
 function Buttons(id, title, targetContainer, callback) {
   this.id = id;
   this.title = title;
@@ -44,51 +97,22 @@ function Buttons(id, title, targetContainer, callback) {
   };
 }
 
-// Create start button
-const btn_object_start = new Buttons("btn-start", "Start Game", "button-wrapper", () => {
-  renderGame(false);
-});
-
-const btn_object_stand = new Buttons("btn-stand", "Stand", "button-wrapper", () => {
-  standCards();
-});
-
-const btn_object_hit = new Buttons("btn-hit", "Hit", "button-wrapper", () => {
-  hitCards(true);
-});
-
-const btn_object_retry = new Buttons("btn-retry", "Retry", "button-wrapper", () => {
-  resetGame();
-});
-
-const btn_object_bet = new Buttons("btn-bet", "Place a Bet", "button-wrapper", () => {
-  placeBet();
-});
-
-btn_object_bet.render();
-
-
-let dealer = new User('Dealer', 100);
-let player = new User('Eubie', 100);
-
-let gameInProgress = false,
-hasBlackJack = false,
-revealDealerCards = false;
-
-let playerCardsEl = document.getElementById('player-cards'),
-    dealerCardsEl = document.getElementById('dealer-cards');
-
-let playerTotalEl = document.getElementById('player-total'),
-    dealerTotalEl = document.getElementById('dealer-total');
-
-let playerChipsEl = document.getElementById('player-chips');
-
-let betAmount = 0;
-
+/**
+ * Executes the placeBet function.
+ *
+ * @param {type} paramName - description of parameter
+ * @return {type} description of return value
+ */
 function placeBet() {
     showCustomPrompt(); 
 }
 
+/**
+ * Renders the game by initializing the dealer and player cards, displaying the player's total, 
+ * displaying the cards, checking for blackjack, and removing the start button if the game is in progress.
+ *
+ * @param {boolean} isFromRetry - indicates if the game is being rendered from a retry
+ */
 function renderGame(isFromRetry = null) {
     dealer.cards.push(...getRandomCard(2));
     player.cards.push(...getRandomCard(2));
@@ -116,6 +140,11 @@ function renderGame(isFromRetry = null) {
     }
 }
 
+/**
+ * Resets the game by removing buttons, resetting game status, cards, totals, and bet.
+ *
+ * @return {undefined} No return value.
+ */
 function resetGame() {
   if (player.chips > 0) {
     // Element reference and store to a variable.
@@ -156,6 +185,11 @@ function resetGame() {
   }
 }
 
+/**
+ * Checks if the player has a blackjack and the dealer does not have a blackjack.
+ *
+ * @return {undefined} This function does not return any value.
+ */
 function isBlackJack() {
   if (player.sumOfCards() === 21 && dealer.sumOfCards() !== 21) {
     dealerTotalEl.textContent = dealer.sumOfCards();
@@ -179,6 +213,11 @@ function isBlackJack() {
   }
 }
 
+/**
+ * Generates a new card for either the player or the dealer, depending on the value of isFromPlayer.
+ *
+ * @param {boolean} isFromPlayer - Indicates whether the card is for the player. Defaults to null.
+ */
 function hitCards(isFromPlayer = null) {
   if (gameInProgress) {
     if (isFromPlayer === true) {
@@ -196,6 +235,11 @@ function hitCards(isFromPlayer = null) {
     }
 }
 
+/**
+ * Executes a series of actions when the game is over and the player stands.
+ *
+ * @return {undefined} This function does not return a value.
+ */
 function standCards() {
     if (gameInProgress) {
         checkWinner();
@@ -207,6 +251,11 @@ function standCards() {
     }
 }
 
+/**
+ * Executes a series of actions when the game is over and the player stands.
+ *
+ * @return {undefined} This function does not return a value.
+ */
 function dealerChoice() {
     if (gameInProgress) {
       const options = ["hit", "stand"];
@@ -220,6 +269,11 @@ function dealerChoice() {
     }
 }
 
+/**
+ * Checks if the player is busted and performs necessary actions if true.
+ *
+ * @return {undefined} No return value.
+ */
 function isBusted() {
     let playerTotal = player.sumOfCards();
     if (playerTotal > 21) {
@@ -237,6 +291,11 @@ function isBusted() {
     }
 } 
 
+/**
+ * Checks the winner of the game.
+ *
+ * @return {undefined} No return value
+ */
 function checkWinner() {
     if (gameInProgress) {
         let playerTotal = player.sumOfCards(),
@@ -259,6 +318,12 @@ function checkWinner() {
     }
 }
 
+/**
+ * Generates an array of random cards.
+ *
+ * @param {number} qty - The number of cards to generate.
+ * @return {number[]} An array of random cards.
+ */
 function getRandomCard(qty) {
   const myMin = 1;
   const myMax = 12;
@@ -279,6 +344,12 @@ function getRandomCard(qty) {
   return cards;
 }
 
+/**
+ * Updates the game status label with the given text.
+ *
+ * @param {string} text - The text to be displayed on the game status label.
+ * @return {string} The updated text of the game status label.
+ */
 function updateGameStatusLabel(text) {
   return document.getElementById("game-status-label").textContent = text
 }
@@ -313,6 +384,12 @@ function displayCards(implementationType) {
   }
 }
 
+/**
+ * Updates the chips display on the page.
+ *
+ * @param {number} player.chips - The number of chips the player has.
+ * @return {void} This function does not return anything.
+ */
 function updateChips() {
   if (player.chips < 0) {
     alert("You're out of chips!");
@@ -322,6 +399,12 @@ function updateChips() {
   document.getElementById("player-chips").textContent = player.chips;
 }
 
+/**
+ * Displays a custom prompt on the screen.
+ *
+ * @param {type} paramName - The ID of the custom prompt element.
+ * @return {type} undefined - This function does not return a value.
+ */
 function showCustomPrompt() {
   const customPrompt = document.getElementById('custom-prompt');
   const overlay = document.getElementById('overlay');
@@ -330,6 +413,12 @@ function showCustomPrompt() {
   overlay.style.display = 'block';
 }
 
+/**
+ * Submits the custom prompt.
+ *
+ * @param {type} paramName - description of parameter
+ * @return {type} description of return value
+ */
 function submitCustomPrompt() {
   betAmount = document.getElementById('betAmount').value;   
   if (betAmount > 0 && betAmount <= player.chips) {
@@ -343,10 +432,21 @@ function submitCustomPrompt() {
   hideCustomPrompt();
 }
 
+/**
+ * Cancels the custom prompt.
+ *
+ * @param {type} None - This function does not accept any parameters.
+ * @return {type} None - This function does not return any value.
+ */
 function cancelCustomPrompt() {
   hideCustomPrompt();
 }
 
+/**
+ * Hides the custom prompt and overlay elements.
+ *
+ * @return {void} No return value.
+ */
 function hideCustomPrompt() {
   const customPrompt = document.getElementById('custom-prompt');
   const overlay = document.getElementById('overlay');
