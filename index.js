@@ -101,7 +101,6 @@ function renderGame(isFromRetry = null) {
 
     gameInProgress = true;
     isBlackJack();
-    updateChips();
 
     // Remove button start when start game
     if (gameInProgress) {
@@ -168,6 +167,8 @@ function isBlackJack() {
     btn_object_retry.render();
 
     player.chips += parseInt(betAmount);
+    updateChips();
+
     gameInProgress = false;
 
     // remove start button
@@ -331,11 +332,12 @@ function showCustomPrompt() {
 
 function submitCustomPrompt() {
   betAmount = document.getElementById('betAmount').value;   
-  if (betAmount > 0) {
+  if (betAmount > 0 && betAmount <= player.chips) {
     button_bet_element = document.getElementById(btn_object_bet.id);
     button_bet_element.remove();
-
     btn_object_start.render();
+  } else {
+    alert("Invalid bet amount!");
   }
 
   hideCustomPrompt();
