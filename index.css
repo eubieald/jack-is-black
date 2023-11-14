@@ -101,3 +101,38 @@ p.msg {
 .player-chips {
   color: red;
 }
+
+#custom-prompt {
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  background-color: palegreen;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+#custom-prompt label {
+  color: black;
+}
+
+.prompt-button-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.prompt-button-wrapper button:last-child {
+  margin-left: 10px;
+}
+
+#overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}

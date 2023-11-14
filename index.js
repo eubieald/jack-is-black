@@ -6,7 +6,9 @@ function User(name) {
   this.cards = [];
   // create method
   this.sumOfCards = function() {
-    return this.cards.reduce((accumulator, curr_value) => accumulator + curr_value, 0);
+    if (this.cards.length > 0) {
+      return this.cards.reduce((accumulator, curr_value) => accumulator + curr_value, 0);
+    }
   }
 }
 
@@ -44,7 +46,7 @@ function Buttons(id, title, targetContainer, callback) {
 
 // Create start button
 const btn_object_start = new Buttons("btn-start", "Start Game", "button-wrapper", () => {
-  renderGame();
+  renderGame(false);
 });
 
 const btn_object_stand = new Buttons("btn-stand", "Stand", "button-wrapper", () => {
@@ -84,11 +86,7 @@ let playerChipsEl = document.getElementById('player-chips');
 let betAmount = 0;
 
 function placeBet() {
-    betAmount = getBetAmount();
-    button_bet_element = document.getElementById(btn_object_bet.id);
-
-    button_bet_element.remove();
-    btn_object_start.render();
+    showCustomPrompt(); 
 }
 
 function renderGame(isFromRetry = null) {
@@ -100,6 +98,7 @@ function renderGame(isFromRetry = null) {
 
     displayCards('dealer');
     displayCards('player');
+
     gameInProgress = true;
     isBlackJack();
     updateChips();
@@ -111,7 +110,7 @@ function renderGame(isFromRetry = null) {
         button_start_element.remove();
       }
 
-    if (!isFromRetry) {
+    if (isFromRetry === false) {
         btn_object_stand.render();
         btn_object_hit.render();
       }
@@ -120,14 +119,36 @@ function renderGame(isFromRetry = null) {
 
 function resetGame() {
   if (player.chips > 0) {
-    betAmount = getBetAmount();
-    let button_retry_element = document.getElementById(btn_object_retry.id);
+    // Element reference and store to a variable.
+    let button_retry_element = document.getElementById(btn_object_retry.id),
+    button_hit_element = document.getElementById(btn_object_hit.id),
+    button_stand_element = document.getElementById(btn_object_stand.id);
+    
+    // remove buttons
     button_retry_element.remove();
+    button_hit_element.remove();
+    button_stand_element.remove();
+
+    // render place bet button
+    btn_object_bet.render();
+
   
+    // reset game status label
     updateGameStatusLabel("Let's play Blackjack!");
+
+    // reset cards
     player.cards = [];
     dealer.cards = [];
-    renderGame(true);
+    playerCardsEl.textContent = "";
+    dealerCardsEl.textContent = "";
+
+    // reset totals
+    playerTotalEl.textContent = 0;
+    dealerTotalEl.textContent = 0;
+
+    // reset bet
+    betAmount = 0;
+    
   } else {
     alert("Gameover! You don't have any chips left. Please try again.");
     location.reload();
@@ -151,6 +172,7 @@ function hitCards(isFromPlayer = null) {
         player.cards.push(...getRandomCard(1));
         playerTotalEl.textContent = player.sumOfCards();
         displayCards('player');
+        isBlackJack();
         isBusted();
         dealerChoice();
     } else {
@@ -287,20 +309,34 @@ function updateChips() {
   document.getElementById("player-chips").textContent = player.chips;
 }
 
-function getBetAmount() {
-  let userInput;
-  let isValid = false;
+function showCustomPrompt() {
+  const customPrompt = document.getElementById('custom-prompt');
+  const overlay = document.getElementById('overlay');
+  
+  customPrompt.style.display = 'block';
+  overlay.style.display = 'block';
+}
 
-  while (!isValid) {
-    userInput = prompt("Place a bet:");
+function submitCustomPrompt() {
+  betAmount = document.getElementById('betAmount').value;   
+  if (betAmount > 0) {
+    button_bet_element = document.getElementById(btn_object_bet.id);
+    button_bet_element.remove();
 
-    // Check if the entered value is a number
-    isValid = !isNaN(userInput) && userInput !== '' && userInput !== null && userInput !== undefined;
-
-    if (!isValid) {
-      alert("Invalid input. Please enter a valid number.");
-    }
+    btn_object_start.render();
   }
 
-  return parseFloat(userInput);
+  hideCustomPrompt();
+}
+
+function cancelCustomPrompt() {
+  hideCustomPrompt();
+}
+
+function hideCustomPrompt() {
+  const customPrompt = document.getElementById('custom-prompt');
+  const overlay = document.getElementById('overlay');
+
+  customPrompt.style.display = 'none';
+  overlay.style.display = 'none';
 }
