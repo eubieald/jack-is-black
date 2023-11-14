@@ -120,19 +120,21 @@ function renderGame(isFromRetry = null) {
 function resetGame() {
   if (player.chips > 0) {
     // Element reference and store to a variable.
-    let button_retry_element = document.getElementById(btn_object_retry.id),
-    button_hit_element = document.getElementById(btn_object_hit.id),
-    button_stand_element = document.getElementById(btn_object_stand.id);
+    let button_hit_element = document.getElementById(btn_object_hit.id),
+    button_stand_element = document.getElementById(btn_object_stand.id),
+    button_retry_element = document.getElementById(btn_object_retry.id);
     
     // remove buttons
     button_retry_element.remove();
-    button_hit_element.remove();
-    button_stand_element.remove();
+
+    if (button_hit_element && button_stand_element) {
+      button_hit_element.remove();
+      button_stand_element.remove();
+    }
 
     // render place bet button
     btn_object_bet.render();
 
-  
     // reset game status label
     updateGameStatusLabel("Let's play Blackjack!");
 
@@ -157,12 +159,22 @@ function resetGame() {
 
 function isBlackJack() {
   if (player.sumOfCards() === 21 && dealer.sumOfCards() !== 21) {
-      updateGameStatusLabel("Player got Blackjack! Player Wins!");
-      dealerTotalEl.textContent = dealer.sumOfCards();
-      playerTotalEl.textContent = player.sumOfCards();
+    dealerTotalEl.textContent = dealer.sumOfCards();
+    playerTotalEl.textContent = player.sumOfCards();
 
-      player.chips += parseInt(betAmount);
-      gameInProgress = false;
+    // show info on screen
+    updateGameStatusLabel("Player got Blackjack! Player Wins!");
+    displayCards('dealer-reveal');
+    btn_object_retry.render();
+
+    player.chips += parseInt(betAmount);
+    gameInProgress = false;
+
+    // remove start button
+    let button_start_element = document.getElementById(btn_object_start.id);
+    if (button_start_element) {
+      button_start_element.remove();
+    }
   }
 }
 
