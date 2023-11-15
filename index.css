@@ -34,6 +34,8 @@ p.msg {
 }
 
 .button-wrapper {
+  display: flex;
+  justify-content: center;
   padding-top: 20px;
 }
 
@@ -135,4 +137,8 @@ p.msg {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
+}
+
+.how-to-play a {
+  color: yellow;
 }
