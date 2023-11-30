@@ -3,7 +3,7 @@
 ### The objective of Blackjack is to beat the dealer by having a hand value closer to 21 without exceeding it. A hand with a total value over 21 results in a bust and a loss.
 
 
-This project is an example that was built along with a Youtube series showing how to create a basic HTML, CSS and JS project. Every part of this project is sample code which shows how to do the following:
+This project is an example that was built along with a Youtube series however I customized the project criteria and implemented a lots of custom features in this BlackJack game.
 
 * arrays
 * objects

@@ -38,16 +38,15 @@ btn_object_bet = new Buttons("btn-bet", "Place a Bet", "button-wrapper", () => {
 btn_object_bet.render();
 
 /**
- * Creates a User object with the given name.
+ * Creates a new User object with the specified name.
  *
  * @param {string} name - The name of the user.
- * @return {undefined} 
+ * @return {undefined} - This function does not return a value.
  */
 function User(name) {
-  this.name = name;
-  this.chips = initialChips;
-  this.cards = [];
-  // create method
+  this.name = name,
+  this.chips = initialChips,
+  this.cards = [],
   this.sumOfCards = function() {
     if (this.cards.length > 0) {
       return this.cards.reduce((accumulator, curr_value) => accumulator + curr_value, 0);
