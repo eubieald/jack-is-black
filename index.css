@@ -92,7 +92,7 @@ p.msg {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 5%;
+  margin-top: 2%;
 }
 
 .user-details-wrapper p.player-name-container {
